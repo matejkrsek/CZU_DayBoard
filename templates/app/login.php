@@ -49,6 +49,10 @@ use DayBoard\Models\Users;
     <aside class="auth-notes" aria-label="Informace k přihlášení">
         <p class="note">Účty zakládá správce domácnosti – registrace není veřejná.</p>
 
+        <?php if (DayBoard\Core\Config::isEphemeral()): ?>
+            <p class="note">Toto je online ukázka. Po čtvrthodině bez návštěv se server uspí a všechna data se vrátí do výchozího stavu. Probuzení trvá zhruba minutu.</p>
+        <?php endif; ?>
+
         <?php if ($demoAccounts !== []): ?>
             <div class="note note--demo">
                 <h2 class="note__title">Ukázkový režim – přihlásit jako:</h2>

@@ -43,6 +43,25 @@ Databázi vrátíte do výchozího stavu příkazem `php bin/reset-db.php`.
   (kořenový přesměruje vše do `public/`, takže databáze ani `.env` nejsou z webu dostupné).
 - **Docker** – `docker compose up -d` a otevřete <http://localhost:8080>. Data jsou ve svazku `dayboard-data`.
 
+## Nasazení online (Render, zdarma)
+
+Repozitář je připravený pro bezplatný tarif hostingu [Render](https://render.com) (soubor `render.yaml`).
+Každý push do větve `main` pak automaticky nasadí novou verzi.
+
+1. Na <https://render.com> se přihlaste účtem GitHub (platební karta není potřeba).
+2. **New → Blueprint**, vyberte repozitář `CZU_DayBoard` a potvrďte **Apply**.
+3. Po prvním sestavení (několik minut) běží web na adrese `https://dayboard-….onrender.com`.
+
+Omezení bezplatného tarifu:
+
+- Po **15 minutách bez návštěv se služba uspí**, první další návštěva čeká asi minutu.
+- **Nemá trvalý disk:** po uspání, restartu nebo novém nasazení se databáze vytvoří znovu
+  s ukázkovou domácností. Pro předvádění to stačí, pro skutečné používání ne.
+  Aplikace na to upozorní na přihlašovací stránce (proměnná `EPHEMERAL_STORAGE=true`).
+
+API klíče (Google, TomTom, Golemio) doplníte v Renderu v nastavení služby v části **Environment**.
+U Google OAuth pak nastavte redirect URI na `https://VASE-ADRESA.onrender.com/nastaveni/google/callback`.
+
 ## Konfigurace
 
 Aplikace běží i bez konfigurace. Pro vlastní nastavení zkopírujte `.env.example` jako `.env`:
@@ -170,7 +189,7 @@ a routa v `src/App.php`. Do `sitemap.xml` se stránka zařadí sama.
 - Odjezdy MHD pokrývají Pražskou integrovanou dopravu (data Golemio).
 - Widgety Dnešní program, Doprava autem a Odjezdy MHD byly bez API klíčů ověřeny jen
   s ukázkovými daty; volání skutečných API je napsané podle dokumentace služeb, ale v ostrém
-  provozu ho zatím nikdo nevyzkoušel. Totéž platí pro spuštění přes Docker a Apache.
+  provozu ho zatím nikdo nevyzkoušel. Spuštění přes Docker je ověřené, přes XAMPP/Apache zatím ne.
 
 ## Řešení potíží
 

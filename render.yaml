@@ -1,0 +1,21 @@
+# Nasazení na Render (https://render.com) – bezplatný tarif.
+# Na Renderu: New → Blueprint → vybrat tento repozitář. Každý push do main pak
+# automaticky nasadí novou verzi. Podrobnosti v README.md, sekce „Nasazení online“.
+services:
+  - type: web
+    name: dayboard
+    runtime: docker
+    plan: free
+    region: frankfurt
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DEMO_MODE
+        value: "true"
+      # Bezplatná služba nemá trvalý disk: po uspání se databáze vytvoří znovu
+      # s ukázkovými daty. Aplikace na to upozorní na přihlašovací stránce.
+      - key: EPHEMERAL_STORAGE
+        value: "true"
+      - key: APP_KEY
+        generateValue: true

@@ -12,6 +12,9 @@ WORKDIR /var/www/html
 COPY . .
 
 # Apache běží pod uživatelem www-data a potřebuje zapisovat databázi, cache a logy
-RUN chown -R www-data:www-data storage
+RUN chown -R www-data:www-data storage \
+    && chmod +x docker/start.sh
 
 EXPOSE 80
+# Port lze změnit proměnnou PORT (využívá např. hosting Render)
+CMD ["/var/www/html/docker/start.sh"]

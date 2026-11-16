@@ -58,6 +58,12 @@ final class Config
         return self::bool('DEMO_MODE', true);
     }
 
+    /** Hosting bez trvalého disku – data se po restartu vrátí do výchozího stavu. */
+    public static function isEphemeral(): bool
+    {
+        return self::bool('EPHEMERAL_STORAGE', false);
+    }
+
     public static function isProduction(): bool
     {
         return self::get('APP_ENV', 'development') === 'production';
