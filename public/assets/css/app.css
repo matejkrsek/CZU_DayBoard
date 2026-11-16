@@ -1,0 +1,1814 @@
+/* ==========================================================================
+   DayBoard – aplikace po přihlášení
+   Hlavička, nástěnka (mřížka widgetů, režim úprav), widgety, nastavení.
+   ========================================================================== */
+
+/* Hustota mřížky – volí si ji uživatel v Osobním nastavení (data-density na <html>). */
+:root {
+    --row-h: 196px;
+    --gap: 16px;
+    --pad: 16px;
+}
+
+:root[data-density="compact"] {
+    --row-h: 170px;
+    --gap: 10px;
+    --pad: 12px;
+}
+
+:root[data-density="comfortable"] {
+    --row-h: 224px;
+    --gap: 22px;
+    --pad: 20px;
+}
+
+/* --- Hlavička aplikace ----------------------------------------------------- */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+}
+
+.app-header__inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem 2rem;
+    max-width: 100rem;
+    margin-inline: auto;
+    padding: 0 1.5rem;
+    min-height: 3.75rem;
+}
+
+.app-nav {
+    flex: 1;
+    min-width: 0;
+    align-self: stretch;
+}
+
+.app-nav ul {
+    display: flex;
+    gap: 0.25rem;
+    height: 100%;
+}
+
+.app-nav a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 0.85rem;
+    color: var(--ink-2);
+    font-size: 0.94rem;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid transparent;
+    white-space: nowrap;
+}
+
+.app-nav a:hover {
+    color: var(--ink);
+}
+
+.app-nav a[aria-current="page"] {
+    color: var(--ink);
+    font-weight: 700;
+    border-bottom-color: var(--accent);
+}
+
+.app-user {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-left: auto;
+}
+
+.app-user__text {
+    display: grid;
+    line-height: 1.25;
+}
+
+.app-user__name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.app-user__role {
+    font-size: 0.76rem;
+    color: var(--ink-3);
+}
+
+.app-main {
+    max-width: 100rem;
+    margin-inline: auto;
+    padding: 1.5rem;
+}
+
+@media (max-width: 760px) {
+    .app-header__inner {
+        flex-wrap: wrap;
+        padding: 0.5rem 1rem 0;
+        gap: 0.4rem 0.75rem;
+    }
+
+    .app-user__text,
+    .app-header__logout .btn span {
+        display: none;
+    }
+
+    .app-header__logout .btn {
+        width: 2.75rem;
+        min-height: 2.75rem;
+        padding: 0;
+    }
+
+    .app-nav {
+        order: 5;
+        flex: 0 0 100%;
+        overflow-x: auto;
+        height: 2.75rem;
+    }
+
+    .app-nav a {
+        padding: 0 0.7rem;
+    }
+
+    .app-main {
+        padding: 1rem;
+    }
+}
+
+/* --- Obecné rozvržení stránek ---------------------------------------------- */
+.page-head {
+    margin-bottom: 1.4rem;
+}
+
+.page-head h1 {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 1.9rem);
+}
+
+.page-head__lead {
+    color: var(--ink-3);
+    font-size: 0.94rem;
+    margin-top: 0.2rem;
+}
+
+.page--narrow {
+    max-width: 32rem;
+    margin-inline: auto;
+}
+
+.page--settings,
+.page--household {
+    max-width: 82rem;
+    margin-inline: auto;
+}
+
+/* Tlačítka Uložit / Zrušit zůstávají u dlouhých formulářů stále po ruce.
+   Lišta sama kliknutí nezachytává, aby nepřekážela polím, která jsou pod ní. */
+.form__actions--sticky {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    padding: 0.8rem 0;
+    background: linear-gradient(to top, var(--bg) 70%, transparent);
+    pointer-events: none;
+}
+
+.form__actions--sticky > * {
+    pointer-events: auto;
+}
+
+/* Prvek s fokusem se při posunu stránky neschová pod přilepenou lištu. */
+html:has(.form__actions--sticky) {
+    scroll-padding-bottom: 5.5rem;
+}
+
+/* --- Nástěnka: záhlaví ------------------------------------------------------ */
+.dash-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1.1rem;
+    min-height: 2.75rem;
+}
+
+.dash-head__title {
+    font-size: clamp(1.5rem, 1.15rem + 1.3vw, 2.1rem);
+}
+
+.dash-head__date {
+    color: var(--ink-3);
+    font-size: 0.94rem;
+}
+
+.editbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem 1.5rem;
+    margin-bottom: 1.1rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius);
+    background: var(--surface-3);
+}
+
+.editbar__title {
+    font-size: 1.05rem;
+}
+
+.editbar__hint {
+    font-size: 0.86rem;
+    color: var(--ink-2);
+}
+
+.editbar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+body.is-editing-dashboard .dash-head {
+    display: none;
+}
+
+/* --- Nástěnka: mřížka ------------------------------------------------------- */
+.board.is-editing {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18.5rem;
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: var(--row-h);
+    gap: var(--gap);
+    position: relative;
+}
+
+.board__empty {
+    padding: 3rem 1.5rem;
+    border: 2px dashed var(--line-strong);
+    border-radius: var(--radius);
+    text-align: center;
+    color: var(--ink-2);
+}
+
+/* --- Widget ----------------------------------------------------------------- */
+.widget {
+    grid-column: var(--c) / span var(--w);
+    grid-row: var(--r) / span var(--h);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.widget__head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: none;
+    min-height: 2.75rem;
+    padding: 0 var(--pad);
+}
+
+.widget__icon {
+    display: inline-flex;
+    color: var(--accent-ink);
+}
+
+.widget__title {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.widget__scope {
+    flex: none;
+    font-size: 0.72rem;
+    color: var(--ink-3);
+}
+
+.widget__body {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: auto;
+    padding: 0.1rem var(--pad) var(--pad);
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+    container-type: size;
+    container-name: widget;
+}
+
+.widget__ghost,
+.widget__size,
+.widget__resize {
+    display: none;
+}
+
+/* Kostra při načítání – rezervuje místo, aby stránka neposkakovala (CLS) */
+.skeleton,
+.widget__ghost {
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.skeleton {
+    display: flex;
+}
+
+.skeleton span,
+.widget__ghost span {
+    display: block;
+    height: 0.8rem;
+    border-radius: 6px;
+    background: var(--surface-2);
+}
+
+.skeleton span:nth-child(2),
+.widget__ghost span:nth-child(2) {
+    width: 72%;
+}
+
+.skeleton span:nth-child(3) {
+    width: 88%;
+}
+
+.widget__ghost span:nth-child(4) {
+    width: 55%;
+}
+
+.skeleton span {
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+    50% {
+        opacity: 0.45;
+    }
+}
+
+/* Stavy widgetu: prázdný, nenastavený, chyba */
+.widget-state {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 100%;
+    font-size: 0.88rem;
+    color: var(--ink-2);
+}
+
+.widget-state > .icon {
+    color: var(--ink-3);
+}
+
+.widget-state--error > .icon {
+    color: var(--bad);
+}
+
+.widget-state__detail {
+    font-size: 0.78rem;
+    color: var(--ink-3);
+    overflow-wrap: anywhere;
+}
+
+.demo-note {
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0.55rem;
+    border-radius: 6px;
+    background: var(--warn-soft);
+    font-size: 0.76rem;
+    color: var(--ink-2);
+}
+
+/* V malých widgetech jen krátký štítek, ať nezabírá místo datům. */
+.demo-note--short {
+    display: table;
+    margin-bottom: 0.35rem;
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* --- Responzivní zobrazení nástěnky ----------------------------------------
+   Rozložení se ukládá pro 4 sloupce. Na užší obrazovce se widgety skládají
+   automaticky ve stejném pořadí (shora dolů, zleva doprava). */
+@media (max-width: 1099px) {
+    .grid:not(.is-editing) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-flow: row dense;
+    }
+
+    .grid:not(.is-editing) .widget {
+        grid-column: span var(--w2);
+        grid-row: span var(--h);
+    }
+}
+
+@media (max-width: 639px) {
+    .grid:not(.is-editing) {
+        grid-template-columns: minmax(0, 1fr);
+        grid-auto-rows: auto;
+    }
+
+    .grid:not(.is-editing) .widget {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    /* Výšku určuje obsah, proto se tu nedá měřit výška kontejneru. */
+    .grid:not(.is-editing) .widget__body {
+        flex: none;
+        max-height: 26rem;
+        container-type: inline-size;
+    }
+}
+
+/* --- Režim úprav ------------------------------------------------------------ */
+.grid.is-editing .widget {
+    border: 2px dashed var(--line-strong);
+    box-shadow: none;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.grid.is-editing .widget:focus-visible,
+.grid.is-editing .widget.is-active {
+    border-style: solid;
+    border-color: var(--ink);
+    outline: none;
+}
+
+.grid.is-editing .widget:focus-visible {
+    box-shadow: 0 0 0 3px var(--accent);
+}
+
+.grid.is-editing .widget__head {
+    touch-action: none;
+}
+
+.grid.is-editing .widget__body {
+    display: none;
+}
+
+.grid.is-editing .widget__ghost {
+    display: flex;
+    flex: 1;
+    padding: 0.4rem var(--pad) var(--pad);
+    overflow: hidden;
+}
+
+.grid.is-editing .widget__scope {
+    display: none;
+}
+
+.widget__remove {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-right: -0.3rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--surface);
+    cursor: pointer;
+    position: relative;
+}
+
+/* Větší dotyková plocha, než je viditelný křížek */
+.widget__remove::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+}
+
+.widget__remove:hover {
+    background: var(--bad-soft);
+    border-color: var(--bad);
+    color: var(--bad);
+}
+
+.grid.is-editing .widget__resize {
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 2rem;
+    height: 2rem;
+    cursor: nwse-resize;
+    touch-action: none;
+}
+
+.widget__resize::after {
+    content: "";
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    width: 12px;
+    height: 12px;
+    border-right: 3px solid var(--ink-3);
+    border-bottom: 3px solid var(--ink-3);
+    border-bottom-right-radius: 4px;
+}
+
+.grid.is-editing .widget:focus-visible .widget__size,
+.grid.is-editing .widget.is-active .widget__size {
+    display: block;
+    position: absolute;
+    left: 50%;
+    bottom: 0.6rem;
+    transform: translateX(-50%);
+    padding: 0.15rem 0.7rem;
+    border-radius: 999px;
+    background: var(--primary);
+    color: var(--on-primary);
+    font-size: 0.74rem;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.widget.is-dragging {
+    z-index: 20;
+    cursor: grabbing;
+    box-shadow: var(--shadow-lg);
+    opacity: 0.94;
+}
+
+.grid__placeholder {
+    grid-column: var(--c) / span var(--w);
+    grid-row: var(--r) / span var(--h);
+    border: 2px dashed var(--accent);
+    border-radius: var(--radius);
+    background: var(--accent-soft);
+}
+
+/* Nabídka widgetů */
+.palette {
+    position: sticky;
+    top: 5rem;
+    display: grid;
+    gap: 0.7rem;
+    padding: 1.1rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.palette__title {
+    font-size: 1.05rem;
+}
+
+.palette__hint {
+    margin-top: -0.6rem;
+    font-size: 0.8rem;
+    color: var(--ink-3);
+}
+
+.palette__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding: 0.2rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+}
+
+.palette__item.is-unavailable .palette__name {
+    color: var(--ink-3);
+}
+
+.palette__state {
+    flex: none;
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+.palette__none {
+    padding: 0.5rem 0;
+    font-size: 0.88rem;
+    color: var(--ink-3);
+}
+
+.legend {
+    padding: 0.85rem 0.95rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    font-size: 0.84rem;
+}
+
+.legend__title {
+    font-size: 0.84rem;
+    margin-bottom: 0.4rem;
+}
+
+.legend__list {
+    display: grid;
+    gap: 0.35rem;
+    counter-reset: legend;
+}
+
+.legend__list li {
+    display: flex;
+    gap: 0.55rem;
+    counter-increment: legend;
+}
+
+.legend__list li::before {
+    content: counter(legend);
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--on-primary);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.legend__keys {
+    margin-top: 0.6rem;
+    color: var(--ink-2);
+}
+
+@media (max-width: 1099px) {
+    .board.is-editing {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .palette {
+        position: static;
+    }
+}
+
+/* Na telefonu a tabletu je režim úprav zmenšené schéma čtyř sloupců. */
+@media (max-width: 899px) {
+    .grid.is-editing {
+        --row-h: 92px;
+        --gap: 8px;
+        --pad: 8px;
+    }
+
+    .grid.is-editing .widget__icon,
+    .grid.is-editing .widget__ghost {
+        display: none;
+    }
+
+    .grid.is-editing .widget__head {
+        align-items: flex-start;
+        padding-top: 0.45rem;
+    }
+
+    .grid.is-editing .widget__title {
+        font-size: 0.72rem;
+        white-space: normal;
+        line-height: 1.2;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+        hyphens: auto;
+    }
+
+    .grid.is-editing .widget__remove {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   Obsah jednotlivých widgetů
+   Podle výšky a šířky těla widgetu (container queries) se skrývají
+   doplňkové údaje, aby se to hlavní vešlo i do nejmenší dlaždice.
+   ========================================================================== */
+
+/* --- Počasí ----------------------------------------------------------------- */
+.weather {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-height: 100%;
+}
+
+.weather__now {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.weather__icon {
+    color: var(--accent-ink);
+}
+
+.weather__temp {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+
+.weather__desc,
+.weather__meta {
+    font-size: 0.8rem;
+    color: var(--ink-3);
+}
+
+.weather__days {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.35rem;
+    margin-top: auto;
+}
+
+.weather__day {
+    display: grid;
+    justify-items: center;
+    gap: 0.05rem;
+    padding: 0.3rem 0.1rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.weather__day-name {
+    font-weight: 600;
+}
+
+.weather__day .icon,
+.weather__day-min {
+    display: none;
+    color: var(--ink-3);
+}
+
+@container widget (max-height: 128px) {
+    .weather__meta {
+        display: none;
+    }
+}
+
+@container widget (min-height: 200px) {
+    .weather__day .icon,
+    .weather__day-min {
+        display: block;
+    }
+
+    .weather__temp {
+        font-size: 2.6rem;
+    }
+}
+
+/* --- Dnešní program --------------------------------------------------------- */
+.events {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.event {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-height: 2.6rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    border-left: 4px solid transparent;
+    font-size: 0.9rem;
+}
+
+.event__time {
+    flex: none;
+    min-width: 2.9rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.event__text {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+}
+
+.event__title,
+.event__place {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.event__place {
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+.event__duration {
+    flex: none;
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+.event__badge {
+    flex: none;
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.event.is-past {
+    opacity: 0.6;
+}
+
+.event.is-current {
+    border-left-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+@container widget (max-width: 260px) {
+    .event__duration {
+        display: none;
+    }
+
+    .event {
+        gap: 0.6rem;
+        padding-inline: 0.6rem;
+    }
+}
+
+/* --- Svátek a denní informace ----------------------------------------------- */
+.day {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-height: 100%;
+}
+
+.day__weekday {
+    font-size: 0.8rem;
+    color: var(--ink-3);
+}
+
+.day__date {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+}
+
+.day__holiday {
+    align-self: flex-start;
+    padding: 0.05rem 0.55rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-size: 0.76rem;
+    font-weight: 600;
+}
+
+.day__name {
+    margin-top: 0.3rem;
+    font-size: 0.94rem;
+}
+
+.day__meta {
+    margin-top: auto;
+    padding-top: 0.3rem;
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+.day__sun {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* --- Doprava autem ---------------------------------------------------------- */
+.routes {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.routes__origin {
+    margin-bottom: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+.route__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.route__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.route__time {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+}
+
+.route__error {
+    font-size: 0.78rem;
+    color: var(--bad);
+}
+
+.route__bar {
+    height: 6px;
+    margin-top: 0.2rem;
+    border-radius: 999px;
+    background: var(--surface-2);
+    overflow: hidden;
+}
+
+.route__bar span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--ok);
+}
+
+.route--slow .route__bar span {
+    background: var(--warn);
+}
+
+.route--jam .route__bar span {
+    background: var(--bad);
+}
+
+.route__meta {
+    margin-top: 0.15rem;
+    font-size: 0.76rem;
+    color: var(--ink-3);
+}
+
+@container widget (max-height: 190px) {
+    .route__meta {
+        display: none;
+    }
+}
+
+/* --- Odjezdy MHD ------------------------------------------------------------ */
+.departures {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.departure {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.9rem;
+}
+
+.line {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    min-width: 2.1rem;
+    height: 1.6rem;
+    padding: 0 0.35rem;
+    border-radius: 6px;
+    background: var(--surface-3);
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.line--metro {
+    background: var(--primary);
+    color: var(--on-primary);
+}
+
+.line--tram {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+}
+
+.departure__text {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    line-height: 1.25;
+}
+
+.departure__headsign,
+.departure__stop {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.departure__stop {
+    font-size: 0.74rem;
+    color: var(--ink-3);
+}
+
+.departure__time {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* --- Sportovní novinky ------------------------------------------------------ */
+.news {
+    display: grid;
+    gap: 0.5rem 1rem;
+}
+
+.news__item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: inherit;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+}
+
+.news__thumb {
+    flex: none;
+    width: 72px;
+    height: 48px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: var(--surface-2);
+}
+
+.news__thumb--empty {
+    display: inline-grid;
+    place-items: center;
+    color: var(--ink-3);
+}
+
+.news__text {
+    min-width: 0;
+    display: grid;
+    gap: 0.1rem;
+}
+
+.news__title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.news__item:hover .news__title {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
+.news__meta {
+    font-size: 0.74rem;
+    color: var(--ink-3);
+}
+
+@container widget (min-width: 520px) {
+    .news {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* --- Nákupní seznam --------------------------------------------------------- */
+.shopping {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    min-height: 100%;
+}
+
+.shopping__add {
+    display: flex;
+    gap: 0.4rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--surface);
+    padding-bottom: 0.15rem;
+}
+
+.shopping__add input {
+    flex: 1;
+    min-width: 0;
+}
+
+.shopping__item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.5rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.shopping__label {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 2.5rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+}
+
+.shopping__label span {
+    overflow-wrap: anywhere;
+}
+
+.shopping__item.is-done .shopping__label span {
+    color: var(--ink-3);
+    text-decoration: line-through;
+}
+
+.shopping__delete {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--ink-3);
+    cursor: pointer;
+}
+
+.shopping__delete:hover {
+    background: var(--bad-soft);
+    color: var(--bad);
+}
+
+.shopping__empty {
+    font-size: 0.88rem;
+    color: var(--ink-3);
+}
+
+.shopping__clear {
+    align-self: flex-start;
+    margin-top: auto;
+    font-size: 0.82rem;
+    color: var(--ink-3);
+}
+
+/* --- Poloha členů ----------------------------------------------------------- */
+.members {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    height: 100%;
+}
+
+.members__map {
+    flex: 1 1 9rem;
+    min-height: 9rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    isolation: isolate;
+}
+
+.members__map-placeholder {
+    font-size: 0.86rem;
+    color: var(--ink-3);
+}
+
+.members__list {
+    display: grid;
+    gap: 0.3rem;
+    flex: none;
+}
+
+.members__item {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.88rem;
+}
+
+.members__dot,
+.map-marker span {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+.members__name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.members__place,
+.members__note,
+.members__empty {
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+.members__note {
+    flex: none;
+    font-size: 0.72rem;
+}
+
+.map-marker span {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.45);
+    font-size: 0.78rem;
+}
+
+.map-marker--home span {
+    background: #1b2230;
+    border-radius: 6px;
+}
+
+@container widget (max-height: 250px) {
+    .members__note {
+        display: none;
+    }
+}
+
+/* --- Rádio ------------------------------------------------------------------ */
+.radio {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.8rem 1.25rem;
+    align-items: center;
+    min-height: 100%;
+}
+
+.radio__player {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: 0;
+}
+
+.radio__toggle {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 0;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--on-primary);
+    cursor: pointer;
+}
+
+.radio__toggle:hover {
+    background: var(--primary-hover);
+}
+
+.radio__icon-pause,
+.radio.is-playing .radio__icon-play {
+    display: none;
+}
+
+.radio.is-playing .radio__icon-pause {
+    display: inline-flex;
+}
+
+.radio__icon-play {
+    display: inline-flex;
+    margin-left: 3px;
+}
+
+.radio__now {
+    min-width: 0;
+    display: grid;
+    gap: 0.1rem;
+}
+
+.radio__station {
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.radio__status {
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+.radio__volume {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink-3);
+}
+
+.radio__volume input {
+    width: 100%;
+    max-width: 9rem;
+    height: 1.5rem;
+    accent-color: var(--primary);
+}
+
+.radio__stations {
+    display: grid;
+    gap: 0.35rem;
+    align-content: center;
+}
+
+.radio__pick {
+    width: 100%;
+    min-height: 2.25rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    font-size: 0.88rem;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.radio__pick:hover {
+    border-color: var(--line-strong);
+}
+
+.radio__pick[aria-pressed="true"] {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-weight: 700;
+}
+
+@container widget (max-width: 420px) {
+    .radio {
+        grid-template-columns: minmax(0, 1fr);
+        align-content: start;
+    }
+}
+
+/* ==========================================================================
+   Osobní nastavení
+   ========================================================================== */
+.settings-layout {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.section-nav {
+    position: sticky;
+    top: 5rem;
+    display: grid;
+    gap: 0.8rem;
+}
+
+.section-nav ul {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+}
+
+.section-nav a {
+    display: block;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-sm);
+    color: var(--ink-2);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.section-nav a:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+}
+
+.settings-form {
+    display: grid;
+    gap: 1.25rem;
+    min-width: 0;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem 1.75rem;
+}
+
+.settings-grid--personal {
+    margin-top: 1.25rem;
+    align-items: end;
+}
+
+.settings-grid__col {
+    display: grid;
+    gap: 1.1rem;
+    align-content: start;
+}
+
+.settings-grid__col--switches {
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+    padding-top: 0.3rem;
+}
+
+.settings-grid--personal .settings-grid__col--switches {
+    padding-bottom: 0.55rem;
+}
+
+.account {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+}
+
+.account + .account {
+    margin-top: 0.6rem;
+}
+
+.account--field {
+    align-items: flex-start;
+}
+
+.account__icon {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--accent-ink);
+}
+
+.account__text {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    gap: 0.3rem;
+}
+
+.account__text h3 {
+    font-family: var(--font);
+    font-size: 0.94rem;
+    letter-spacing: 0;
+}
+
+.account__text p {
+    font-size: 0.84rem;
+    color: var(--ink-2);
+}
+
+.routes-settings {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 1.5rem 2rem;
+}
+
+.dest-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr) auto;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stop-add {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.stop-add input {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 1099px) {
+    .settings-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .section-nav {
+        position: static;
+    }
+
+    .section-nav ul {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 860px) {
+    .settings-grid,
+    .routes-settings {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .account {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 560px) {
+    .dest-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .dest-row > input[id^="dest-address"] {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+}
+
+/* ==========================================================================
+   Správa domácnosti
+   ========================================================================== */
+.household-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.household-layout__main {
+    display: grid;
+    gap: 1.25rem;
+    min-width: 0;
+}
+
+.household-layout__side {
+    min-width: 0;
+}
+
+.household-layout__actions {
+    grid-column: 1 / -1;
+}
+
+.household-layout .card {
+    display: grid;
+    gap: 1.1rem;
+}
+
+.household-layout .card__head {
+    margin-bottom: 0;
+}
+
+.member-name,
+.widget-name {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.widget-name .icon {
+    color: var(--ink-3);
+}
+
+.table select {
+    min-height: 2.4rem;
+    min-width: 10.5rem;
+    padding-block: 0.3rem;
+}
+
+.table__actions {
+    white-space: nowrap;
+}
+
+.table__actions .link-button + .link-button {
+    margin-left: 0.6rem;
+}
+
+.table--widgets td {
+    width: 5.5rem;
+}
+
+.table tr.is-disabled th {
+    color: var(--ink-3);
+    font-weight: 500;
+}
+
+.switch--solo {
+    display: flex;
+}
+
+.location {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 1.25rem;
+}
+
+.location__fields {
+    display: grid;
+    gap: 1.1rem;
+    align-content: start;
+}
+
+.location__preview {
+    min-height: 11rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    font-size: 0.86rem;
+    color: var(--ink-3);
+}
+
+.switch-list {
+    display: grid;
+    gap: 0.9rem;
+}
+
+.picker--stations {
+    max-height: 18rem;
+    overflow-y: auto;
+}
+
+@media (max-width: 1099px) {
+    .household-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .location {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .card {
+        padding: 1.1rem;
+    }
+
+    .card__head {
+        flex-wrap: wrap;
+    }
+}
+
+/* ==========================================================================
+   Přihlášení
+   ========================================================================== */
+.auth-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.5rem;
+}
+
+.auth-header__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    padding: 0 0.9rem;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius-sm);
+    color: var(--ink-2);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.auth-header__back:hover {
+    color: var(--ink);
+    border-style: solid;
+}
+
+.auth-main {
+    padding: clamp(1rem, 6vh, 4rem) 1rem 3rem;
+}
+
+.auth-layout {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.5rem 2.5rem;
+}
+
+.auth-card {
+    width: min(100%, 26rem);
+    padding: 2.25rem 2rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    display: grid;
+    gap: 1.1rem;
+}
+
+.auth-card__logo {
+    justify-self: center;
+}
+
+.auth-card__logo .brand__mark {
+    border-radius: 14px;
+}
+
+.auth-card__title {
+    text-align: center;
+    font-size: 1.6rem;
+}
+
+.auth-card__lead {
+    margin-top: -0.8rem;
+    text-align: center;
+    color: var(--ink-3);
+}
+
+.auth-card__hint {
+    text-align: center;
+    font-size: 0.84rem;
+    color: var(--ink-3);
+}
+
+.auth-notes {
+    width: min(100%, 19rem);
+    display: grid;
+    gap: 0.9rem;
+    padding-top: 1rem;
+}
+
+.note--demo {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.note__title {
+    font-family: var(--font);
+    font-size: 0.86rem;
+    letter-spacing: 0;
+}
+
+.note__small {
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+/* Mapa Leaflet uvnitř widgetu a náhledu lokality */
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+    font-family: var(--font);
+    background: var(--surface-2);
+}

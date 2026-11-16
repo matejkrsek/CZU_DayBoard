@@ -1,0 +1,9 @@
+.git
+.env
+.claude
+.vscode
+node_modules
+storage/*.sqlite*
+storage/app.key
+storage/cache/*
+storage/logs/*

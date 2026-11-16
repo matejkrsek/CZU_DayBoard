@@ -1,0 +1,2 @@
+# Databáze, cache a logy nesmí být z webu dostupné.
+Require all denied

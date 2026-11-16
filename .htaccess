@@ -1,0 +1,8 @@
+# Projekt naklonovaný přímo do složky webového serveru (např. XAMPP htdocs):
+# všechny požadavky se přesměrují do složky public/, takže zdrojové kódy,
+# databáze ani soubor .env nejsou z webu dostupné.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^$ public/ [L]
+    RewriteRule (.*) public/$1 [L]
+</IfModule>

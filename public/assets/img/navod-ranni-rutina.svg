@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <rect width="800" height="400" fill="#fde8d7"/>
+  <!-- vycházející slunce -->
+  <circle cx="400" cy="320" r="150" fill="#f9c9a3"/>
+  <circle cx="400" cy="320" r="100" fill="#ea580c"/>
+  <g stroke="#c2410c" stroke-width="10" stroke-linecap="round">
+    <path d="M400 92v44M214 160l32 32M586 160l-32 32M128 300h44M672 300h-44"/>
+  </g>
+  <rect y="320" width="800" height="80" fill="#1b2230"/>
+  <!-- hodiny -->
+  <g transform="translate(150 150)">
+    <circle r="58" fill="#ffffff" stroke="#1b2230" stroke-width="8"/>
+    <path d="M0-30V0l20 14" fill="none" stroke="#1b2230" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- seznam úkolů -->
+  <g transform="translate(560 84)">
+    <rect width="160" height="196" rx="16" fill="#ffffff" stroke="#1b2230" stroke-width="6"/>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="24" y="30" width="26" height="26" rx="6" fill="#1b2230" stroke="#1b2230" stroke-width="4"/>
+      <path d="M30 43l5 5 9-10" stroke="#ffffff" stroke-width="4"/>
+      <rect x="24" y="84" width="26" height="26" rx="6" fill="#1b2230" stroke="#1b2230" stroke-width="4"/>
+      <path d="M30 97l5 5 9-10" stroke="#ffffff" stroke-width="4"/>
+      <rect x="24" y="138" width="26" height="26" rx="6" stroke="#1b2230" stroke-width="4"/>
+    </g>
+    <g fill="#c4bcab">
+      <rect x="64" y="37" width="72" height="12" rx="6"/>
+      <rect x="64" y="91" width="56" height="12" rx="6"/>
+      <rect x="64" y="145" width="66" height="12" rx="6" fill="#c2410c"/>
+    </g>
+  </g>
+</svg>

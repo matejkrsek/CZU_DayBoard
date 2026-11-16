@@ -1,0 +1,22 @@
+# DayBoard v Dockeru: docker compose up -d  ->  http://localhost:8080
+services:
+  dayboard:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      # Hodnoty se berou ze souboru .env vedle tohoto souboru (viz .env.example).
+      APP_ENV: ${APP_ENV:-production}
+      APP_URL: ${APP_URL:-}
+      DEMO_MODE: ${DEMO_MODE:-true}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      TOMTOM_API_KEY: ${TOMTOM_API_KEY:-}
+      GOLEMIO_API_KEY: ${GOLEMIO_API_KEY:-}
+    volumes:
+      # Databáze, cache a šifrovací klíč přežijí smazání i nové sestavení kontejneru.
+      - dayboard-data:/var/www/html/storage
+    restart: unless-stopped
+
+volumes:
+  dayboard-data:

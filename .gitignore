@@ -1,0 +1,22 @@
+# Lokální konfigurace a tajné klíče – nikdy necommitovat
+/.env
+
+# Data aplikace (databáze, cache, logy, šifrovací klíč)
+/storage/*.sqlite
+/storage/*.sqlite-journal
+/storage/*.sqlite-wal
+/storage/*.sqlite-shm
+/storage/app.key
+/storage/cache/*
+/storage/logs/*
+!/storage/cache/.gitkeep
+!/storage/logs/.gitkeep
+
+# Nástroje a editory
+/node_modules/
+/vendor/
+.vscode/
+.idea/
+.claude/
+.DS_Store
+Thumbs.db
